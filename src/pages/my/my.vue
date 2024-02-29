@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useMemberStore } from '@/stores'
-import '@/utils/http'
+import { http } from '@/utils/http'
 const memberStore = useMemberStore()
 
-const getDate = () => {
-  uni.request({
+const getDate = async () => {
+  const res = await http({
     method: 'GET',
     url: '/home/banner',
   })
+  console.log('🚀 ~ ', res)
 }
 </script>
 
@@ -27,7 +28,7 @@ const getDate = () => {
       保存用户信息
     </button>
     <button @tap="memberStore.clearProfile()" size="mini" plain type="warn">清理用户信息</button>
-    <button @tap="getDate">请求</button>
+    <button @tap="getDate" size="mini" plain>请求</button>
   </view>
 </template>
 
