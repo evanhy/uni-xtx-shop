@@ -17,7 +17,7 @@ const getHomeBannerData = async () => {
 
 // 获取前台分类数据
 const categoryList = ref<CategoryItem[]>([])
-const getHomeCategoryDate = async () => {
+const getHomeCategoryData = async () => {
   const res = await getHomeCategoryAPI()
   categoryList.value = res.result
 }
@@ -36,9 +36,22 @@ const onScrolltolower = () => {
   guessRef.value?.getMore()
 }
 
+// 下拉刷新状态
+const isTriggered = ref(false)
+// 自定义下拉刷新被触发
+const onRefresherrefresh = async () => {
+  // 开启动画
+  isTriggered.value = true
+  // 重置猜你喜欢组件数据
+  guessRef.value?.resetData()
+  // 加载数据
+  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotList()])
+  // 关闭动画
+  isTriggered.value = false
+}
 onLoad(() => {
   getHomeBannerData()
-  getHomeCategoryDate()
+  getHomeCategoryData()
   getHomeHotList()
 })
 </script>
@@ -46,7 +59,14 @@ onLoad(() => {
 <template>
   <!-- 自定义导航栏 -->
   <CustomNavbar />
-  <scroll-view @scrolltolower="onScrolltolower" scroll-y class="scroll-view">
+  <scroll-view
+    @scrolltolower="onScrolltolower"
+    scroll-y
+    class="scroll-view"
+    refresher-enabled
+    :refresher-triggered="isTriggered"
+    @refresherrefresh="onRefresherrefresh"
+  >
     <!-- 自定义轮播图 -->
     <XtxSwiper :list="bannerList" />
     <!-- 分类面板 -->
