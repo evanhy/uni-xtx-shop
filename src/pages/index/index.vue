@@ -70,6 +70,7 @@ onLoad(async () => {
     :refresher-triggered="isTriggered"
     @refresherrefresh="onRefresherrefresh"
   >
+    <!-- 骨架屏 -->
     <PageSkeleton v-if="isLoading" />
     <template v-else>
       <!-- 自定义轮播图 -->
